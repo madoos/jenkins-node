@@ -38,6 +38,8 @@ RUN usermod -a -G docker jenkins
 ENV JENKINS_HOME /var/lib/jenkins
 VOLUME /var/lib/jenkins
 COPY ./src/plugins.txt /usr/share/jenkins/plugins.txt
+RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
+
 
 ADD ./src/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 EXPOSE 8080
