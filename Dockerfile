@@ -6,7 +6,7 @@ FROM jenkins:2.32.1
 
 MAINTAINER Maurice Dominguez <maurice.ronet.dominguez@gmail.com>
 
-# Install necessary packages
+# Install packages
 USER root
 RUN apt-get update \
       && apt-get install -y sudo supervisor \
@@ -26,7 +26,7 @@ RUN curl -sSL https://get.docker.com/ | sh && \
 # Make sure jenkins user has docker privileges
 RUN usermod -aG docker jenkins
 
-# Install initial plugins
+# Install Jenkins plugins for Node CI
 USER jenkins
 COPY ./src/plugins.txt /usr/share/jenkins/plugins.txt
 RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
