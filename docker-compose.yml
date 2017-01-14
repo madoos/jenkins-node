@@ -1,7 +1,8 @@
 jenkins-node:
   image: madoos/jenkins-node:latest
-  privileged: true
   ports:
-    - 8081:8080
+    - 8080:8080
   volumes:
-    - /containers/jenkins-node:/var/lib/jenkins
+    #- /containers/jenkins-node:/var/lib/jenkins
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /usr/bin/docker:/usr/bin/docker # $(which docker):/usr/bin/docker
