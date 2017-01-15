@@ -2,59 +2,44 @@
 # madoos/jenkins-node 
 #######################
 
-FROM ubuntu:14.04
+FROM jenkins:2.32.1
 
 MAINTAINER Maurice Dominguez <maurice.ronet.dominguez@gmail.com>
 
-RUN apt-get update -qq && apt-get install -qqy \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    lxc \
-    iptables
+# Install packages
+USER root
+RUN apt-get update \
+      && apt-get install -y sudo supervisor \
+      && rm -rf /var/lib/apt/lists/*
 
-# Install Docker
-RUN curl -sSL https://get.docker.com/ | sh
+# Install docker-engine
+# According to Petazzoni's article:
+# ---------------------------------
+# "Former versions of this post advised to bind-mount the docker binary from
+# the host to the container. This is not reliable anymore, because the Docker
+# Engine is no longer distributed as (almost) static libraries."
+ARG docker_version=1.12.2
+RUN curl -sSL https://get.docker.com/ | sh && \
+    apt-get purge -y docker-engine && \
+    apt-get install docker-engine=${docker_version}-0~jessie
 
-# Install the wrapper script from https://raw.githubusercontent.com/docker/docker/master/hack/dind.
-ADD ./src/dind /usr/local/bin/dind
-RUN chmod +x /usr/local/bin/dind
-ADD ./src/wrapdocker /usr/local/bin/wrapdocker
-RUN chmod +x /usr/local/bin/wrapdocker
+# Make sure jenkins user has docker privileges
+RUN usermod -aG docker jenkins
 
-# Define additional metadata for our image.
-VOLUME /var/lib/docker
+# Install Jenkins plugins for Node CI
+USER jenkins
+COPY ./src/plugins.txt /usr/share/jenkins/plugins.txt
+RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
 
-# Install Docker Compose
-ENV DOCKER_COMPOSE_VERSION 1.8.1
-RUN curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
+# supervisord
+USER root
 
-# Install Jenkins 
-RUN wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | apt-key add -
-RUN sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
-RUN apt-get update && apt-get install -y zip supervisor jenkins && rm -rf /var/lib/apt/lists/*
-RUN usermod -a -G docker jenkins
-ENV JENKINS_HOME /var/lib/jenkins
-VOLUME /var/lib/jenkins
+# Create log folder for supervisor and jenkins
+RUN mkdir -p /var/log/supervisor
+RUN mkdir -p /var/log/jenkins
 
-# Install Jenkins plugins for Node
+# Copy the supervisor.conf file into Docker
+COPY ./src/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-ADD ./src/jenkins-scripts/install-plugins.sh /usr/local/bin/install-plugins.sh
-ADD ./src/jenkins-scripts/jenkins-support /usr/local/bin/jenkins-support
-
-RUN chmod +x /usr/local/bin/install-plugins.sh
-RUN chmod +x /usr/local/bin/jenkins-support
-
-COPY ./src/jenkins-scripts/plugins.txt /usr/share/jenkins/plugins.txt
-#RUN /usr/local/bin/install-plugins.sh /usr/share/jenkins/plugins.txt
-
-# Launch processes
-ADD ./src/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
-
-
-# RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
-
-EXPOSE 8080
-
-CMD ["/usr/bin/supervisord"]
+# Start supervisord when running the container
+CMD /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf

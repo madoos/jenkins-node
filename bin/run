@@ -1,6 +1,6 @@
 # !bin/bash
 
-# docker run -d -v /var/run/docker.sock:/var/run/docker.sock \
-# -v $(which docker):/usr/bin/docker -p 8080:8080 madoos/jenkins-node
-
-docker run --privileged -p 8080:8080 -d madoos/jenkins-node:latest
+docker run -d -v /var/run/docker.sock:/var/run/docker.sock \
+-v /path/to/your/jenkins/home:/var/jenkins_home \
+-p 8080:8080 \
+madoos/jenkins-node:latest
