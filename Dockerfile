@@ -6,11 +6,18 @@ FROM jenkins:2.32.1
 
 MAINTAINER Maurice Dominguez <maurice.ronet.dominguez@gmail.com>
 
-# Install packages
+
 USER root
-RUN apt-get update \
-      && apt-get install -y sudo supervisor \
-      && rm -rf /var/lib/apt/lists/*
+RUN apt-get update
+
+# Install supervisord
+RUN apt-get install -y sudo supervisor
+
+# Install change log generator 
+RUN apt-get install -y ruby && gem install activesupport -v 4.2.6 && gem install github_changelog_generator
+
+# Remove inncesary lists
+RUN rm -rf /var/lib/apt/lists/*
 
 # Install docker-engine
 # According to Petazzoni's article:
@@ -43,3 +50,4 @@ COPY ./src/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Start supervisord when running the container
 CMD /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+
