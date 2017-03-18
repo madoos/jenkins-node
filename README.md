@@ -26,10 +26,9 @@ madoos/jenkins-node:latest`
  * `github-organization-folder`
  * `workflow-aggregator`
  * `nodejs`
- * `checkstyle`
- * `clover`
- * `junit`
  * `embeddable-build-status`
+ * `sonar`
+ * `htmlpublisher`
 
 
 ## Considerations

@@ -2,7 +2,6 @@ github:latest
 github-organization-folder:latest
 workflow-aggregator:latest
 nodejs:latest
-checkstyle:latest
-clover:latest
-junit:latest
 embeddable-build-status:latest
+sonar:latest
+htmlpublisher:latest
