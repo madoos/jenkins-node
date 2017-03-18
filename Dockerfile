@@ -2,10 +2,9 @@
 # madoos/jenkins-node 
 #######################
 
-FROM jenkins:2.32.1
+FROM jenkins:2.32.3
 
 MAINTAINER Maurice Dominguez <maurice.ronet.dominguez@gmail.com>
-
 
 USER root
 RUN apt-get update
