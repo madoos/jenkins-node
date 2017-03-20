@@ -1,5 +1,5 @@
 ########################
-# madoos/jenkins-node 
+# madoos/jenkins-dod 
 #######################
 
 FROM jenkins:2.32.3

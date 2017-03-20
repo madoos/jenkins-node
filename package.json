@@ -1,5 +1,5 @@
 {
-  "name": "madoos-jenkins-node",
+  "name": "madoos-jenkins-dod",
   "version": "0.0.1",
   "description": "Jenkins imagen with dood implementation and jenkins plugins for Nodejs CI.",
   "main": "index.js",

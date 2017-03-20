@@ -4,7 +4,7 @@ Jenkins imagen with dood implementation and jenkins plugins for Nodejs CI.
 
 ## Getting Started
 
-`docker pull madoos/jenkins-node:latest`
+`docker pull madoos/jenkins-dod:latest`
 
 ## Run container
 
@@ -25,7 +25,6 @@ madoos/jenkins-node:latest`
  * `github`
  * `github-organization-folder`
  * `workflow-aggregator`
- * `nodejs`
  * `embeddable-build-status`
  * `sonar`
  * `htmlpublisher`
