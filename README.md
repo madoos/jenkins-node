@@ -1,4 +1,4 @@
-# madoos-jenkins-node
+# madoos-jenkins-dod
 
 Jenkins imagen with dood implementation and jenkins plugins for Nodejs CI.
 
