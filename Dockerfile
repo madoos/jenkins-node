@@ -35,7 +35,8 @@ RUN usermod -aG docker jenkins
 # Install Jenkins plugins for Node CI
 USER jenkins
 COPY ./src/plugins.txt /usr/share/jenkins/plugins.txt
-RUN /usr/local/bin/install-plugins.sh /usr/share/jenkins/plugins.txt
+# RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
+RUN /usr/local/bin/install-plugins.sh $(cat /usr/share/jenkins/plugins.txt | tr '\n' ' ')
 
 # supervisord
 USER root
